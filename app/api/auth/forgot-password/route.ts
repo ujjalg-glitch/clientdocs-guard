@@ -36,7 +36,9 @@ export async function POST(req: NextRequest) {
   // - <p><a href="{{ .SiteURL }}/api/auth/confirm?token_hash={{ .TokenHash }}&type=recovery&next=/auth/new-password">Reset Password</a></p>
 
   const supabase = await createClient()
-  const { data, error } = await supabase.auth.resetPasswordForEmail(form.data.email)
+  const { data, error } = await supabase.auth.resetPasswordForEmail(form.data.email, {
+    redirectTo: 'https://clientdocs-guard.vercel.app/auth/new-password'
+  })
 
   if (error) {
     return ApiResponse.json({ message: error?.message }, { status: error?.status })
