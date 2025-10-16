@@ -17,3 +17,7 @@ export function absoluteUrl(path: string) {
   return `${process.env.NEXT_PUBLIC_APP_URL}${path}`
 }
 
+export function relativeUrl(path: string) {
+  return path.startsWith('/') ? path : `/${path}`
+}
+

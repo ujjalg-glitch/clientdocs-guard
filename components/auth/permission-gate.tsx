@@ -72,7 +72,7 @@ export function PermissionGate({
           return
         }
 
-        const hasRequiredRole = userRoles?.some(ur => ur.role?.name === requiredRole)
+        const hasRequiredRole = userRoles?.some((ur: any) => ur.role?.name === requiredRole)
         
         if (!hasRequiredRole) {
           setHasPermission(false)
@@ -102,7 +102,7 @@ export function PermissionGate({
           return
         }
 
-        const hasRequiredPermission = userPermissions?.some(up => 
+        const hasRequiredPermission = userPermissions?.some((up: any) => 
           up.permission?.name === requiredPermission && up.granted
         )
 

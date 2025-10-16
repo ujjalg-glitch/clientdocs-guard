@@ -3,7 +3,9 @@
 import { useState, useEffect } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Users, Calendar, User } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Users, Calendar, User, ArrowRight } from 'lucide-react'
+import Link from 'next/link'
 
 interface UserGroup {
   id: string
@@ -31,18 +33,17 @@ export function UserGroups() {
   const fetchUserGroups = async () => {
     try {
       setError(null)
-      console.log('Fetching user groups...')
       const response = await fetch('/api/user/groups')
-      console.log('Response status:', response.status)
       
       if (response.ok) {
         const data = await response.json()
-        console.log('Groups data:', data)
         setGroups(data.data || [])
       } else {
         const errorData = await response.json()
-        console.error('API error:', errorData)
-        setError(errorData.error || 'Failed to fetch groups')
+        const errorMsg = errorData.details 
+          ? `${errorData.error}: ${errorData.details}` 
+          : errorData.error || 'Failed to fetch groups'
+        setError(errorMsg)
       }
     } catch (error) {
       console.error('Error fetching user groups:', error)
@@ -90,15 +91,6 @@ export function UserGroups() {
         <CardDescription>Groups you're a member of</CardDescription>
       </CardHeader>
       <CardContent>
-        {/* Debug information */}
-        <div className="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg text-xs">
-          <p><strong>🔍 Debug Info:</strong></p>
-          <p>Loading: {loading.toString()}</p>
-          <p>Groups count: {groups.length}</p>
-          <p>Error: {error || 'None'}</p>
-          <p>Groups data: {JSON.stringify(groups, null, 2)}</p>
-        </div>
-
         {error && (
           <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">
             <strong>Error:</strong> {error}
@@ -110,9 +102,6 @@ export function UserGroups() {
             <Users className="h-12 w-12 mx-auto mb-4 opacity-50" />
             <p className="text-lg font-medium">No group memberships yet</p>
             <p className="text-sm mt-2">You'll see groups here when you're added to them</p>
-            <p className="text-xs mt-2 text-red-600">
-              Check debug info above and browser console for details
-            </p>
           </div>
         ) : (
           <div className="space-y-4">
@@ -122,7 +111,7 @@ export function UserGroups() {
                 className="border rounded-lg p-4 hover:bg-muted/50 transition-colors"
               >
                 <div className="flex items-start justify-between">
-                  <div className="space-y-2">
+                  <div className="space-y-2 flex-1">
                     <div className="flex items-center gap-2">
                       <h3 className="font-medium">{group.name}</h3>
                       <Badge variant="outline" className="text-xs">
@@ -146,6 +135,14 @@ export function UserGroups() {
                         <span>Joined {formatDate(group.joinedAt)}</span>
                       </div>
                     </div>
+                  </div>
+                  <div className="ml-4">
+                    <Link href={`/admin/groups/${group.id}`}>
+                      <Button variant="outline" size="sm">
+                        View Files
+                        <ArrowRight className="ml-2 h-4 w-4" />
+                      </Button>
+                    </Link>
                   </div>
                 </div>
               </div>
